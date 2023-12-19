@@ -6,6 +6,10 @@ import org.javalite.activejdbc.annotations.Table;
 @Table("ti_users")
 public class User extends Model {
 
+    public Integer getId() {
+        return getInteger("id");
+    }
+
     public String getEmail() {
         return getString("email");
     }

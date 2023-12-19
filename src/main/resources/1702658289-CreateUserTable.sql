@@ -8,7 +8,7 @@ CREATE TABLE ti_users (
                        photo VARCHAR(255),
                        boss_mode BOOLEAN DEFAULT false,
                        user_type VARCHAR(255),
-                       parent_user_id VARCHAR(255),
+                       parent_user_id INTEGER,
                        is_child BOOLEAN NOT NULL DEFAULT false,
                        stripe_customer_id VARCHAR(255),
                        stripe_checkout_session_id VARCHAR(255),
@@ -16,5 +16,6 @@ CREATE TABLE ti_users (
                        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
                        updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
                        reset_password_token VARCHAR(255),
-                       reset_password_expires INT
+                       reset_password_expires INT,
+                       FOREIGN KEY (parent_user_id) REFERENCES ti_users (id)
 );

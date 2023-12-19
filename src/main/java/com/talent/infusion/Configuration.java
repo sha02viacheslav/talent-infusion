@@ -10,9 +10,11 @@ import org.javalite.activejdbc.DB;
 public class Configuration {
     private static final DB db = new DB();
     private static final UserRepository userRepository = new UserRepository(db);
+
     private static final UserService userService = new UserService(userRepository);
-    private static final UserController userController = new UserController(userService);
     private static final AuthService authService = new AuthService();
+
+    private static final UserController userController = new UserController(userService, authService);
     private static final AuthController authController = new AuthController(userService, authService);
 
     public static UserService userService(){

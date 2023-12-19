@@ -12,8 +12,7 @@ import org.javalite.activejdbc.Base;
 
 import static com.talent.infusion.Configuration.authController;
 import static com.talent.infusion.Configuration.userController;
-import static io.javalin.apibuilder.ApiBuilder.get;
-import static io.javalin.apibuilder.ApiBuilder.path;
+import static io.javalin.apibuilder.ApiBuilder.*;
 
 @Slf4j
 public class Main {
@@ -65,6 +64,7 @@ public class Main {
             path("/user", () -> {
                 path(String.format("{%s}", UserController.USER_ID_PATH_PARAM), () -> {
                     get(userController().getUserById, AuthRole.LOGGED_IN_USER);
+                    put(userController().updateUser, AuthRole.LOGGED_IN_USER);
                 });
             });
         });
