@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id "de.schablinski.activejdbc-gradle-plugin" version "2.0.3"
+    id 'application'
+}
+
+group = 'com.talent.infusion'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    implementation 'io.javalin:javalin:5.6.3'
+    implementation 'org.slf4j:slf4j-simple:2.0.7'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
+    implementation 'io.github.cdimascio:java-dotenv:5.2.2'
+    implementation 'org.javalite:activejdbc:3.0'
+    implementation 'org.postgresql:postgresql:42.7.1'
+    implementation 'javax.inject:javax.inject:1'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    implementation 'org.mindrot:jbcrypt:0.4'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["src/main/java"]
+        }
+    }
+}
+
+application {
+    mainClassName = 'com.talent.infusion.Main'
+}
