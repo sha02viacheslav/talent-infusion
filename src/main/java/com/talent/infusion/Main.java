@@ -54,10 +54,16 @@ public class Main {
 
             path("/auth", () -> {
                 path("register", () -> {
-                    get(authController().register);
+                    post(authController().register);
                 });
                 path("login", () -> {
-                    get(authController().login);
+                    post(authController().login);
+                });
+                path("forgot-password", () -> {
+                    post(authController().forgotPassword);
+                });
+                path("check-code", () -> {
+                    post(authController().checkVerificationCode);
                 });
             });
 
