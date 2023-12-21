@@ -5,6 +5,13 @@ import lombok.Getter;
 import java.util.Date;
 
 @Getter
-public record VerificationCodeInfo(String code, Date expiration) {
+public class VerificationCodeInfo {
+    private String code;
+    private Date expiration;
+
+    public VerificationCodeInfo(String code, Date expiration) {
+        this.code = code;
+        this.expiration = expiration;
+    }
 
 }

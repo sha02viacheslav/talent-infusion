@@ -60,12 +60,12 @@ public class AuthService {
             return CheckVerificationCodeResult.INVALID;
         }
 
-        if (verificationCodeInfo.expiration().before(new Date())) {
+        if (verificationCodeInfo.getExpiration().before(new Date())) {
             this.verificationCodes.remove(email);
             return CheckVerificationCodeResult.EXPIRED;
         }
 
-        if (!verificationCodeInfo.code().equals(code)) {
+        if (!verificationCodeInfo.getCode().equals(code)) {
             return CheckVerificationCodeResult.INVALID;
         }
 
