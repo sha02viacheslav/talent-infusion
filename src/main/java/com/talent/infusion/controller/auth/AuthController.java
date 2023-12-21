@@ -174,4 +174,40 @@ public class AuthController {
             ctx.status(HttpStatus.SERVICE_UNAVAILABLE).json(resultMap);
         }
     };
+
+    public Handler resendCode = ctx -> {
+        JavalinJackson jackson = new JavalinJackson();
+        HashMap<String, Object> resultMap = new HashMap<>();
+        ForgotPasswordDto forgotPasswordDto;
+
+        try {
+            forgotPasswordDto = jackson.fromJsonString(ctx.body(), ForgotPasswordDto.class);
+            String email = forgotPasswordDto.getEmail();
+
+            Optional<User> user = userService.getUserByEmail(email);
+
+            if (user.isEmpty()) {
+                resultMap.put("success", false);
+                resultMap.put("message", "User not found");
+                ctx.status(HttpStatus.BAD_REQUEST).json(resultMap);
+                return;
+            }
+
+            if (!authService.sendResetPasswordEmail(email)) {
+                resultMap.put("success", false);
+                resultMap.put("message", "Failed to resend the verification code");
+                ctx.status(HttpStatus.BAD_REQUEST).json(resultMap);
+                return;
+            }
+
+            resultMap.put("success", true);
+            resultMap.put("message", "Verification code resent");
+            ctx.status(HttpStatus.OK).json(resultMap);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            resultMap.put("success", false);
+            resultMap.put("message", e.getMessage());
+            ctx.status(HttpStatus.SERVICE_UNAVAILABLE).json(resultMap);
+        }
+    };
 }

@@ -65,6 +65,9 @@ public class Main {
                 path("check-code", () -> {
                     post(authController().checkVerificationCode);
                 });
+                path("resend-code", () -> {
+                    post(authController().resendCode);
+                });
             });
 
             path("/user", () -> {
