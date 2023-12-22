@@ -13,9 +13,9 @@ CREATE TABLE ti_users (
                        stripe_customer_id VARCHAR(255),
                        stripe_checkout_session_id VARCHAR(255),
                        stripe_billing_portal_session_id VARCHAR(255),
-                       created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                       updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                        reset_password_token VARCHAR(255),
-                       reset_password_expires TIMESTAMPTZ,
+                       reset_password_expires TIMESTAMP,
                        FOREIGN KEY (parent_user_id) REFERENCES ti_users (id)
 );
