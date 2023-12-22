@@ -1,9 +1,6 @@
 package com.talent.infusion.controller.auth;
 
-import com.talent.infusion.dto.ForgotPasswordDto;
-import com.talent.infusion.dto.UserLoginDto;
-import com.talent.infusion.dto.UserRegisterDto;
-import com.talent.infusion.dto.VerificationCodeDto;
+import com.talent.infusion.dto.*;
 import com.talent.infusion.entiry.user.User;
 import com.talent.infusion.service.auth.AuthService;
 import com.talent.infusion.service.auth.CheckVerificationCodeResult;
@@ -164,8 +161,20 @@ public class AuthController {
                 return;
             }
 
+            Optional<User> user = userService.getUserByEmail(email);
+
+            if (user.isEmpty()) {
+                resultMap.put("success", false);
+                resultMap.put("message", "User not found");
+                ctx.status(HttpStatus.BAD_REQUEST).json(resultMap);
+                return;
+            }
+
+            String token = userService.changeTokenForResetPassword(user.get().getId(), true);
+
             resultMap.put("success", true);
             resultMap.put("message", "Verification code is valid!");
+            resultMap.put("token", token);
             ctx.status(HttpStatus.OK).json(resultMap);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -202,6 +211,49 @@ public class AuthController {
 
             resultMap.put("success", true);
             resultMap.put("message", "Verification code resent");
+            ctx.status(HttpStatus.OK).json(resultMap);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            resultMap.put("success", false);
+            resultMap.put("message", e.getMessage());
+            ctx.status(HttpStatus.SERVICE_UNAVAILABLE).json(resultMap);
+        }
+    };
+
+    public Handler resetPassword = ctx -> {
+        JavalinJackson jackson = new JavalinJackson();
+        HashMap<String, Object> resultMap = new HashMap<>();
+        ResetPasswordDto resetPasswordDto;
+
+        try {
+            resetPasswordDto = jackson.fromJsonString(ctx.body(), ResetPasswordDto.class);
+            String email = resetPasswordDto.getEmail();
+            String token = resetPasswordDto.getToken();
+            String password = resetPasswordDto.getPassword();
+
+            Optional<User> user = userService.getUserByRestToken(email, token);
+
+            if (user.isEmpty()) {
+                resultMap.put("success", false);
+                resultMap.put("message", "Invalid token");
+                ctx.status(HttpStatus.BAD_REQUEST).json(resultMap);
+                return;
+            }
+
+            if (password == null || password.isEmpty()) {
+                resultMap.put("success", false);
+                resultMap.put("message", "Password couldn't be empty");
+                ctx.status(HttpStatus.BAD_REQUEST).json(resultMap);
+                return;
+            }
+
+            userService.updatePassword(user.get().getId(), password);
+            userService.changeTokenForResetPassword(user.get().getId(), false);
+
+            // TODO Send email
+
+            resultMap.put("success", true);
+            resultMap.put("message", "Password reset successfully!");
             ctx.status(HttpStatus.OK).json(resultMap);
         } catch (Exception e) {
             log.error(e.getMessage());

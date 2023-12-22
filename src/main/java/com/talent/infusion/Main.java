@@ -68,6 +68,9 @@ public class Main {
                 path("resend-code", () -> {
                     post(authController().resendCode);
                 });
+                path("reset-password", () -> {
+                    post(authController().resetPassword);
+                });
             });
 
             path("/user", () -> {

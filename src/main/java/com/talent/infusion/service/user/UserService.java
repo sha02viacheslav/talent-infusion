@@ -7,6 +7,10 @@ import com.talent.infusion.repository.user.UserRepository;
 import org.javalite.activejdbc.LazyList;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.security.SecureRandom;
+import java.sql.Timestamp;
+import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Optional;
 import javax.inject.Singleton;
@@ -30,6 +34,10 @@ public class UserService {
 
     public Optional<User> getUserByEmail(String email) {
         return userRepository.getUserByEmail(email);
+    }
+
+    public Optional<User> getUserByRestToken(String email, String token) {
+        return userRepository.getUserByResetToken(email, token);
     }
 
     public User createUser(UserRegisterDto userRegisterDto) {
@@ -67,5 +75,35 @@ public class UserService {
         }
 
         return updatedUser;
+    }
+
+    public void updatePassword(int id, String password) {
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("password", hashedPassword);
+
+        userRepository.updateUser(id, data);
+    }
+
+    public String changeTokenForResetPassword(int id, boolean isSet) {
+        HashMap<String, Object> data = new HashMap<>();
+        int length = 32;
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] randomBytes = new byte[length];
+        secureRandom.nextBytes(randomBytes);
+        String token = Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes).substring(0, length);
+
+        if (isSet) {
+            data.put("reset_password_token", token);
+            // Token expires in 10 minutes
+            data.put("reset_password_expires", new Timestamp(new Date().getTime() + 1000 * 60 * 10));
+        } else {
+            data.put("reset_password_token", null);
+            data.put("reset_password_expires", null);
+        }
+
+        userRepository.updateUser(id, data);
+
+        return token;
     }
 }

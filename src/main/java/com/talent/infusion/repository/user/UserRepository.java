@@ -6,6 +6,8 @@ import com.talent.infusion.entiry.user.User;
 import org.javalite.activejdbc.DB;
 import org.javalite.activejdbc.LazyList;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -23,6 +25,10 @@ public class UserRepository {
 
     public Optional<User> getUserByEmail(String email) {
         return db.withDb(() -> Optional.ofNullable(User.findFirst("email = ?", email)));
+    }
+
+    public Optional<User> getUserByResetToken(String email, String token) {
+        return db.withDb(() -> Optional.ofNullable(User.findFirst("email = ? and reset_password_token = ? and reset_password_expires > ?", email, token, new Timestamp(new Date().getTime()))));
     }
 
     public LazyList<User> getUsersByParentUserId(int parentUserId) {
