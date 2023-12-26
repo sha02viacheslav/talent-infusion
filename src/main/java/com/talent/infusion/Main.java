@@ -71,6 +71,9 @@ public class Main {
                 path("reset-password", () -> {
                     post(authController().resetPassword);
                 });
+                path("onlyauth", () -> {
+                    get(authController().hiddenInformation, AuthRole.LOGGED_IN_USER);
+                });
             });
 
             path("/user", () -> {

@@ -262,4 +262,8 @@ public class AuthController {
             ctx.status(HttpStatus.SERVICE_UNAVAILABLE).json(resultMap);
         }
     };
+
+    public Handler hiddenInformation = ctx -> {
+        ctx.status(HttpStatus.OK).json("hidden information");
+    };
 }
