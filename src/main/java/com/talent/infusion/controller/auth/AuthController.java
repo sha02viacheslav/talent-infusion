@@ -5,6 +5,7 @@ import com.talent.infusion.entiry.user.User;
 import com.talent.infusion.service.auth.AuthService;
 import com.talent.infusion.service.auth.CheckVerificationCodeResult;
 import com.talent.infusion.service.user.UserService;
+import com.talent.infusion.utils.mailchimp.MailChimp;
 import io.javalin.http.Handler;
 import io.javalin.http.HttpStatus;
 import io.javalin.json.JavalinJackson;
@@ -118,7 +119,7 @@ public class AuthController {
                 return;
             }
 
-            if (!authService.sendResetPasswordEmail(email)) {
+            if (!authService.sendResetPasswordEmail(email, user.get().getFirstName() + " " + user.get().getLastName())) {
                 resultMap.put("success", false);
                 resultMap.put("message", "Raised issue while sending verification code");
                 ctx.status(HttpStatus.BAD_REQUEST).json(resultMap);
@@ -202,7 +203,7 @@ public class AuthController {
                 return;
             }
 
-            if (!authService.sendResetPasswordEmail(email)) {
+            if (!authService.sendResetPasswordEmail(email, user.get().getFirstName() + " " + user.get().getLastName())) {
                 resultMap.put("success", false);
                 resultMap.put("message", "Failed to resend the verification code");
                 ctx.status(HttpStatus.BAD_REQUEST).json(resultMap);
@@ -250,7 +251,8 @@ public class AuthController {
             userService.updatePassword(user.get().getId(), password);
             userService.changeTokenForResetPassword(user.get().getId(), false);
 
-            // TODO Send email
+            MailChimp mailChimp = new MailChimp();
+            mailChimp.sendResetPasswordConfirmationEmail(email, user.get().getFirstName() + " " + user.get().getLastName());
 
             resultMap.put("success", true);
             resultMap.put("message", "Password reset successfully!");

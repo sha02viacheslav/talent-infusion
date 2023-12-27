@@ -3,11 +3,9 @@ package com.talent.infusion.service.auth;
 import com.talent.infusion.entiry.user.User;
 import com.talent.infusion.jwt.JWT;
 import com.talent.infusion.model.VerificationCodeInfo;
+import com.talent.infusion.utils.mailchimp.MailChimp;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class AuthService {
     private final Map<String, VerificationCodeInfo> verificationCodes = new HashMap<>();
@@ -46,10 +44,13 @@ public class AuthService {
         verificationCodes.put(email, new VerificationCodeInfo(verificationCode, expiration));
     }
 
-    public Boolean sendResetPasswordEmail(String email) {
+    public Boolean sendResetPasswordEmail(String email, String name) {
         String verificationCode = generateVerificationCode();
         updateVerificationCode(email, verificationCode);
-        // TODO Send email
+
+        MailChimp mailChimp = new MailChimp();
+        mailChimp.sendResetPasswordLinkEmail(email, name, verificationCode);
+
         return true;
     }
 
