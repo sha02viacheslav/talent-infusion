@@ -10,6 +10,14 @@ public class Invitation extends Model {
         return getInteger("id");
     }
 
+    public String getEmail() {
+        return getString("email");
+    }
+
+    public String getName() {
+        return getString("name");
+    }
+
     public void setEmail(String email) {
         setString("email", email);
     }

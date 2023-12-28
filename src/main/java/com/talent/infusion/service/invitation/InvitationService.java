@@ -17,6 +17,10 @@ public class InvitationService {
         this.invitationRepository = invitationRepository;
     }
 
+    public Optional<Invitation> getInvitationById(int id) {
+        return invitationRepository.getInvitationById(id);
+    }
+
     public Optional<Invitation> getInvitationByEmail(String email) {
         return invitationRepository.getInvitationByEmail(email);
     }

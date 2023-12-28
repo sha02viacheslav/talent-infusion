@@ -17,6 +17,7 @@ import java.util.Optional;
 
 @Slf4j
 public class InvitationController {
+    public static final String INVITATION_ID_PATH_PARAM = "id";
     static int MAX_INVITATIONS = 5;
     private InvitationService invitationService;
     private UserService userService;
@@ -70,6 +71,33 @@ public class InvitationController {
 
             resultMap.put("success", true);
             resultMap.put("invitation", newInvitation);
+            ctx.status(HttpStatus.OK).json(resultMap);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            resultMap.put("success", false);
+            resultMap.put("message", e.getMessage());
+            ctx.status(HttpStatus.SERVICE_UNAVAILABLE).json(resultMap);
+        }
+    };
+
+    public Handler resendInvitation = ctx -> {
+        String id = ctx.pathParam(INVITATION_ID_PATH_PARAM);
+        HashMap<String, Object> resultMap = new HashMap<>();
+
+        try {
+            Optional<Invitation> invitation = invitationService.getInvitationById(Integer.parseInt(id));
+
+            if (invitation.isEmpty()) {
+                resultMap.put("success", false);
+                resultMap.put("message", "Invitation not found");
+                ctx.status(HttpStatus.BAD_REQUEST).json(resultMap);
+                return;
+            }
+
+            MailChimp mailChimp = new MailChimp();
+            mailChimp.sendInvitationEmail(invitation.get().getEmail(), invitation.get().getName());
+
+            resultMap.put("success", true);
             ctx.status(HttpStatus.OK).json(resultMap);
         } catch (Exception e) {
             log.error(e.getMessage());

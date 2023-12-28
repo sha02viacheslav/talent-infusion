@@ -1,6 +1,7 @@
 package com.talent.infusion;
 
 
+import com.talent.infusion.controller.invitation.InvitationController;
 import com.talent.infusion.controller.main.MainController;
 import com.talent.infusion.controller.user.UserController;
 import com.talent.infusion.guard.AuthGuard;
@@ -84,7 +85,10 @@ public class Main {
             });
 
             path("/invitation", () -> {
-                post(invitationController().create);
+                post(invitationController().create, AuthRole.LOGGED_IN_USER);
+                path(String.format("resend/{%s}", InvitationController.INVITATION_ID_PATH_PARAM), () -> {
+                    post(invitationController().resendInvitation, AuthRole.LOGGED_IN_USER);
+                });
             });
         });
     }

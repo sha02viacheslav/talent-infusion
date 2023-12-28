@@ -16,6 +16,10 @@ public class InvitationRepository {
         this.db = db;
     }
 
+    public Optional<Invitation> getInvitationById(int id) {
+        return db.withDb(() -> Optional.ofNullable(Invitation.findById(id)));
+    }
+
     public Optional<Invitation> getInvitationByEmail(String email) {
         return db.withDb(() -> Optional.ofNullable(Invitation.findFirst("email = ?", email)));
     }
