@@ -80,6 +80,7 @@ public class Main {
                 path(String.format("{%s}", UserController.USER_ID_PATH_PARAM), () -> {
                     get(userController().getUserById, AuthRole.LOGGED_IN_USER);
                     put(userController().updateUser, AuthRole.LOGGED_IN_USER);
+                    delete(userController().deleteUser, AuthRole.LOGGED_IN_USER);
                 });
             });
         });

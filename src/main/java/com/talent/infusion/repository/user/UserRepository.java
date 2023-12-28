@@ -64,4 +64,16 @@ public class UserRepository {
             return Optional.of(user);
         });
     }
+
+    public boolean deleteUser(int id) {
+        return db.withDb(() -> {
+            User user = User.findById(id);
+
+            if (user == null) {
+                return false;
+            }
+
+            return user.delete();
+        });
+    }
 }

@@ -78,4 +78,28 @@ public class UserController {
             ctx.status(HttpStatus.SERVICE_UNAVAILABLE).json(resultMap);
         }
     };
+
+    public Handler deleteUser = ctx -> {
+        String id = ctx.pathParam(USER_ID_PATH_PARAM);
+
+        HashMap<String, Object> resultMap = new HashMap<>();
+
+        try {
+            if (!userService.deleteUser(Integer.parseInt(id))) {
+                resultMap.put("success", false);
+                resultMap.put("message", "User not found");
+                ctx.status(HttpStatus.OK).json(resultMap);
+                return;
+            }
+
+            resultMap.put("success", true);
+            ctx.status(HttpStatus.OK).json(resultMap);
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            resultMap.put("success", false);
+            resultMap.put("message", e.getMessage());
+            ctx.status(HttpStatus.SERVICE_UNAVAILABLE).json(resultMap);
+        }
+    };
 }

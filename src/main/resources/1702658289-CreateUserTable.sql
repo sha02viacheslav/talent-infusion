@@ -17,5 +17,5 @@ CREATE TABLE ti_users (
                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                        reset_password_token VARCHAR(255),
                        reset_password_expires TIMESTAMP,
-                       FOREIGN KEY (parent_user_id) REFERENCES ti_users (id)
+                       FOREIGN KEY (parent_user_id) REFERENCES ti_users (id) ON DELETE SET NULL
 );

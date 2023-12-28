@@ -106,4 +106,8 @@ public class UserService {
 
         return token;
     }
+
+    public boolean deleteUser(int id) {
+        return userRepository.deleteUser(id);
+    }
 }
