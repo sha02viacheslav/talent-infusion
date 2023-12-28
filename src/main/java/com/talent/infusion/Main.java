@@ -10,8 +10,7 @@ import io.javalin.Javalin;
 import lombok.extern.slf4j.Slf4j;
 import org.javalite.activejdbc.Base;
 
-import static com.talent.infusion.Configuration.authController;
-import static com.talent.infusion.Configuration.userController;
+import static com.talent.infusion.Configuration.*;
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 @Slf4j
@@ -82,6 +81,10 @@ public class Main {
                     put(userController().updateUser, AuthRole.LOGGED_IN_USER);
                     delete(userController().deleteUser, AuthRole.LOGGED_IN_USER);
                 });
+            });
+
+            path("/invitation", () -> {
+                post(invitationController().create);
             });
         });
     }

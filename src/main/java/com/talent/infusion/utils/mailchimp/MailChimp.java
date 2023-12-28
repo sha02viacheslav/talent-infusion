@@ -12,6 +12,7 @@ import java.io.IOException;
 public class MailChimp {
     static Dotenv dotenv = Dotenv.configure().load();
     static String apiKey = dotenv.get("MAILCHIMP_APIKEY");
+    static String frontendUrl = dotenv.get("FRONTEND_URL");
 
     private void sendTemplate(String email, String name, String templateName, String subject, JSONArray globalMergeVarsArray) {
         OkHttpClient client = new OkHttpClient();
@@ -82,5 +83,14 @@ public class MailChimp {
         nameObject.put("content", name);
         globalMergeVarsArray.put(nameObject);
         sendTemplate(email, name, "Talent Infusion - Reset Password Confirmation", "Reset Password Confirmation", globalMergeVarsArray);
+    }
+
+    public void sendInvitationEmail(String email, String name) {
+        JSONArray globalMergeVarsArray = new JSONArray();
+        JSONObject nameObject = new JSONObject();
+        nameObject.put("name", "applink");
+        nameObject.put("content", String.format("%s/signup", frontendUrl));
+        globalMergeVarsArray.put(nameObject);
+        sendTemplate(email, name, "Talent Infusion - Invite a child", "Invitation", globalMergeVarsArray);
     }
 }
