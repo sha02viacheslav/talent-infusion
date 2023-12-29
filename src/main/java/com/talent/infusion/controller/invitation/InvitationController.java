@@ -18,6 +18,7 @@ import java.util.Optional;
 @Slf4j
 public class InvitationController {
     public static final String INVITATION_ID_PATH_PARAM = "id";
+    public static final String INVITATION_PARENT_USER_ID_PATH_PARAM = "id";
     static int MAX_INVITATIONS = 5;
     private InvitationService invitationService;
     private UserService userService;
@@ -98,6 +99,24 @@ public class InvitationController {
             mailChimp.sendInvitationEmail(invitation.get().getEmail(), invitation.get().getName());
 
             resultMap.put("success", true);
+            ctx.status(HttpStatus.OK).json(resultMap);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            resultMap.put("success", false);
+            resultMap.put("message", e.getMessage());
+            ctx.status(HttpStatus.SERVICE_UNAVAILABLE).json(resultMap);
+        }
+    };
+
+    public Handler getInviteesByParentUserId = ctx -> {
+        String parentUserId = ctx.pathParam(INVITATION_PARENT_USER_ID_PATH_PARAM);
+        HashMap<String, Object> resultMap = new HashMap<>();
+
+        try {
+            LazyList<Invitation> invitees = invitationService.getInvitationByParentUserId(Integer.parseInt(parentUserId));
+
+            resultMap.put("success", true);
+            resultMap.put("data", invitees);
             ctx.status(HttpStatus.OK).json(resultMap);
         } catch (Exception e) {
             log.error(e.getMessage());

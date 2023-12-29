@@ -89,6 +89,9 @@ public class Main {
                 path(String.format("resend/{%s}", InvitationController.INVITATION_ID_PATH_PARAM), () -> {
                     post(invitationController().resendInvitation, AuthRole.LOGGED_IN_USER);
                 });
+                path(String.format("parent/{%s}", InvitationController.INVITATION_PARENT_USER_ID_PATH_PARAM), () -> {
+                    get(invitationController().getInviteesByParentUserId, AuthRole.LOGGED_IN_USER);
+                });
             });
         });
     }
