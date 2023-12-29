@@ -32,4 +32,8 @@ public class InvitationService {
     public Invitation createInvitation(CreateInvitationDto createInvitationDto) {
         return invitationRepository.createInvitation(createInvitationDto);
     }
+
+    public Optional<Invitation> deleteInvitation(int id) {
+        return invitationRepository.deleteInvitation(id);
+    }
 }

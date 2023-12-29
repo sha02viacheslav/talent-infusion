@@ -39,4 +39,18 @@ public class InvitationRepository {
             return invitation;
         });
     }
+
+    public Optional<Invitation> deleteInvitation(int id) {
+        return db.withDb(() -> {
+            Invitation invitation = Invitation.findById(id);
+
+            if (invitation == null) {
+                return Optional.empty();
+            }
+
+            invitation.delete();
+
+            return Optional.of(invitation);
+        });
+    }
 }

@@ -125,4 +125,29 @@ public class InvitationController {
             ctx.status(HttpStatus.SERVICE_UNAVAILABLE).json(resultMap);
         }
     };
+
+    public Handler delete = ctx -> {
+        String id = ctx.pathParam(INVITATION_ID_PATH_PARAM);
+        HashMap<String, Object> resultMap = new HashMap<>();
+
+        try {
+            Optional<Invitation> invitation = invitationService.deleteInvitation(Integer.parseInt(id));
+
+            if (invitation.isEmpty()) {
+                resultMap.put("success", false);
+                resultMap.put("message", "Invitation not found");
+                ctx.status(HttpStatus.BAD_REQUEST).json(resultMap);
+                return;
+            }
+
+            resultMap.put("success", true);
+            resultMap.put("data", invitation.get());
+            ctx.status(HttpStatus.OK).json(resultMap);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            resultMap.put("success", false);
+            resultMap.put("message", e.getMessage());
+            ctx.status(HttpStatus.SERVICE_UNAVAILABLE).json(resultMap);
+        }
+    };
 }

@@ -92,6 +92,9 @@ public class Main {
                 path(String.format("parent/{%s}", InvitationController.INVITATION_PARENT_USER_ID_PATH_PARAM), () -> {
                     get(invitationController().getInviteesByParentUserId, AuthRole.LOGGED_IN_USER);
                 });
+                path(String.format("{%s}", InvitationController.INVITATION_ID_PATH_PARAM), () -> {
+                    delete(invitationController().delete, AuthRole.LOGGED_IN_USER);
+                });
             });
         });
     }
