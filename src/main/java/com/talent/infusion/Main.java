@@ -96,6 +96,15 @@ public class Main {
                     delete(invitationController().delete, AuthRole.LOGGED_IN_USER);
                 });
             });
+
+            path("/talent", () -> {
+                path("search", () -> {
+                    get(talentController().search);
+                });
+                path("count_query", () -> {
+                    post(talentController().countQuery);
+                });
+            });
         });
     }
 }
