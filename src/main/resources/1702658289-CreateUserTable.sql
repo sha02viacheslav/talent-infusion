@@ -7,7 +7,7 @@ CREATE TABLE ti_users (
                        company_name VARCHAR(255),
                        photo VARCHAR(255),
                        boss_mode BOOLEAN DEFAULT false,
-                       user_type VARCHAR(255) NOT NULL CHECK (status IN ('parent', 'child', 'admin')),
+                       user_type VARCHAR(255) NOT NULL CHECK (user_type IN ('parent', 'child', 'admin')),
                        parent_user_id INTEGER,
                        is_child BOOLEAN NOT NULL DEFAULT false,
                        stripe_customer_id VARCHAR(255),
