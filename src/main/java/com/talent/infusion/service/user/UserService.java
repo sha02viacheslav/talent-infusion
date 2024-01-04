@@ -107,6 +107,13 @@ public class UserService {
         return token;
     }
 
+    public void updateStripeCheckoutSessionId(int id, String checkoutSessionId) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("stripe_checkout_session_id", checkoutSessionId);
+
+        userRepository.updateUser(id, data);
+    }
+
     public boolean deleteUser(int id) {
         return userRepository.deleteUser(id);
     }

@@ -1,5 +1,7 @@
 package com.talent.infusion.controller.payment;
 
+import com.stripe.model.checkout.Session;
+import com.talent.infusion.dto.CreateCheckoutSessionDto;
 import com.talent.infusion.dto.CreatePaymentDto;
 import com.talent.infusion.entiry.payment.Payment;
 import com.talent.infusion.entiry.user.User;
@@ -54,6 +56,39 @@ public class PaymentController {
 
             resultMap.put("success", true);
             resultMap.put("payment", newPayment);
+            ctx.status(HttpStatus.OK).json(resultMap);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            resultMap.put("success", false);
+            resultMap.put("message", e.getMessage());
+            ctx.status(HttpStatus.SERVICE_UNAVAILABLE).json(resultMap);
+        }
+    };
+
+    public Handler createCheckoutSession = ctx -> {
+        JavalinJackson jackson = new JavalinJackson();
+        HashMap<String, Object> resultMap = new HashMap<>();
+        CreateCheckoutSessionDto createCheckoutSessionDto;
+
+        try {
+            createCheckoutSessionDto = jackson.fromJsonString(ctx.body(), CreateCheckoutSessionDto.class);
+            int userId = createCheckoutSessionDto.getUserId();
+
+            Optional<User> user = userService.getUserById(userId);
+
+            if (user.isEmpty()) {
+                resultMap.put("success", false);
+                resultMap.put("message", "User not found or userId is not correct");
+                ctx.status(HttpStatus.BAD_REQUEST).json(resultMap);
+                return;
+            }
+
+            Session checkoutSession = paymentService.createCheckoutSession(user.get().getEmail(), createCheckoutSessionDto);
+
+            userService.updateStripeCheckoutSessionId(userId, checkoutSession.getId());
+
+            resultMap.put("success", true);
+            resultMap.put("checkoutSessionId", checkoutSession.getId());
             ctx.status(HttpStatus.OK).json(resultMap);
         } catch (Exception e) {
             log.error(e.getMessage());

@@ -8,6 +8,7 @@ import com.talent.infusion.guard.AuthGuard;
 import com.talent.infusion.guard.AuthRole;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.javalin.Javalin;
+import io.javalin.json.JavalinJackson;
 import lombok.extern.slf4j.Slf4j;
 import org.javalite.activejdbc.Base;
 
@@ -108,6 +109,9 @@ public class Main {
 
             path("/payment", () -> {
                 post(paymentController().create);
+                path("checkout-session", () -> {
+                    post(paymentController().createCheckoutSession);
+                });
             });
         });
     }
