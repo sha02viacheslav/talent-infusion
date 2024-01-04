@@ -105,6 +105,10 @@ public class Main {
                     post(talentController().countQuery);
                 });
             });
+
+            path("/payment", () -> {
+                post(paymentController().create);
+            });
         });
     }
 }
