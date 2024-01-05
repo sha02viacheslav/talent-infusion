@@ -112,6 +112,9 @@ public class Main {
                 path("checkout-session", () -> {
                     post(paymentController().createCheckoutSession);
                 });
+                path("webhook", () -> {
+                    post(paymentController().verifyPayments);
+                });
             });
         });
     }

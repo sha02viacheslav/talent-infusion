@@ -39,3 +39,19 @@ CREATE TABLE IF NOT EXISTS ti_payments (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS subscription (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES ti_users(id) ON DELETE SET NULL,
+    stripe_subscription_id VARCHAR(255) NOT NULL,
+    subscription_item_id VARCHAR(255) NOT NULL,
+    cancel_at_period_end BOOLEAN,
+    current_period_start TIMESTAMP,
+    current_period_end TIMESTAMP,
+    product_id VARCHAR(255),
+    plan_id VARCHAR(255),
+    status VARCHAR(255),
+    recurring_type VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);

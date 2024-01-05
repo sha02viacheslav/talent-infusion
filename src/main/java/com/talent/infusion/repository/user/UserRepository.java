@@ -27,6 +27,10 @@ public class UserRepository {
         return db.withDb(() -> Optional.ofNullable(User.findFirst("email = ?", email)));
     }
 
+    public Optional<User> getByStripeCustomerId(String stripeCustomerId) {
+        return db.withDb(() -> Optional.ofNullable(User.findFirst("stripe_customer_id = ?", stripeCustomerId)));
+    }
+
     public Optional<User> getUserByResetToken(String email, String token) {
         return db.withDb(() -> Optional.ofNullable(User.findFirst("email = ? and reset_password_token = ? and reset_password_expires > ?", email, token, new Timestamp(new Date().getTime()))));
     }
@@ -51,6 +55,23 @@ public class UserRepository {
     public Optional<User> updateUser(int id, HashMap<String, Object> data) {
         return db.withDb(() -> {
             User user = User.findById(id);
+            if (user == null) {
+                return Optional.empty();
+            }
+
+            for (HashMap.Entry<String, Object> entry : data.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                user.set(key, value);
+            }
+            user.saveIt();
+            return Optional.of(user);
+        });
+    }
+
+    public void updateUserByEmail(String email, HashMap<String, Object> data) {
+        db.withDb(() -> {
+            User user = User.findFirst("email = ?", email);
             if (user == null) {
                 return Optional.empty();
             }

@@ -32,27 +32,7 @@ public class PaymentController {
 
         try {
             createPaymentDto = jackson.fromJsonString(ctx.body(), CreatePaymentDto.class);
-            String email = createPaymentDto.getCustomerEmail();
-
-            Optional<User> user = userService.getUserByEmail(email);
-
-            if (user.isEmpty()) {
-                resultMap.put("success", false);
-                resultMap.put("message", String.format("User with email %s doesn't exist", email));
-                ctx.status(HttpStatus.BAD_REQUEST).json(resultMap);
-                return;
-            }
-
-            Optional<Payment> payment = paymentService.getPaymentIntentId(createPaymentDto.getPaymentIntent());
-
-            if (payment.isPresent()) {
-                resultMap.put("success", false);
-                resultMap.put("message", "Payment already made for this month");
-                ctx.status(HttpStatus.BAD_REQUEST).json(resultMap);
-                return;
-            }
-
-            Payment newPayment = paymentService.insertPayment(user.get().getId(), createPaymentDto);
+            Payment newPayment = paymentService.insertPayment(createPaymentDto);
 
             resultMap.put("success", true);
             resultMap.put("payment", newPayment);
@@ -90,6 +70,26 @@ public class PaymentController {
             resultMap.put("success", true);
             resultMap.put("checkoutSessionId", checkoutSession.getId());
             ctx.status(HttpStatus.OK).json(resultMap);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            resultMap.put("success", false);
+            resultMap.put("message", e.getMessage());
+            ctx.status(HttpStatus.SERVICE_UNAVAILABLE).json(resultMap);
+        }
+    };
+
+    public Handler verifyPayments = ctx -> {
+        HashMap<String, Object> resultMap = new HashMap<>();
+
+        try {
+            String sigHeader = ctx.header("stripe-signature");
+            if (paymentService.verifyPayments(ctx.body(), sigHeader)) {
+                ctx.status(HttpStatus.OK).result("webhook done");
+            } else {
+                resultMap.put("success", false);
+                resultMap.put("message", "webhook failed");
+                ctx.status(HttpStatus.SERVICE_UNAVAILABLE).json(resultMap);
+            }
         } catch (Exception e) {
             log.error(e.getMessage());
             resultMap.put("success", false);

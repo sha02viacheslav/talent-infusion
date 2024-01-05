@@ -36,6 +36,10 @@ public class UserService {
         return userRepository.getUserByEmail(email);
     }
 
+    public Optional<User> getByStripeCustomerId(String stripeCustomerId) {
+        return userRepository.getByStripeCustomerId(stripeCustomerId);
+    }
+
     public Optional<User> getUserByRestToken(String email, String token) {
         return userRepository.getUserByResetToken(email, token);
     }
@@ -110,6 +114,20 @@ public class UserService {
     public void updateStripeCheckoutSessionId(int id, String checkoutSessionId) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("stripe_checkout_session_id", checkoutSessionId);
+
+        userRepository.updateUser(id, data);
+    }
+
+    public void updateStripeCustomerId(String email, String customerId) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("stripe_customer_id", customerId);
+
+        userRepository.updateUserByEmail(email, data);
+    }
+
+    public void updateBossMode(int id, boolean bossMode) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("boss_mode", bossMode);
 
         userRepository.updateUser(id, data);
     }
