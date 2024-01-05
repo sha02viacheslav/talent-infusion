@@ -34,6 +34,10 @@ public class User extends Model {
         return getBoolean("boss_mode");
     }
 
+    public String getStripeCheckoutSessionId() {
+        return getString("stripe_checkout_session_id");
+    }
+
     public String getUserType() {
         return getString("user_type");
     }

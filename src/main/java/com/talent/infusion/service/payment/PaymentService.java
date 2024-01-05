@@ -120,4 +120,15 @@ public class PaymentService {
         }
         return true;
     }
+
+    public Session createPortalSession(User user) throws Exception {
+        Session checkoutSession = Session.retrieve(user.getStripeCheckoutSessionId());
+        SessionCreateParams params = SessionCreateParams.builder()
+                .setCustomer(checkoutSession.getCustomer())
+                .setReturnUrl(String.format("%s/account/settings/payment-method", frontendUrl))
+                .build();
+
+        return Session.create(params);
+
+    }
 }

@@ -3,6 +3,7 @@ package com.talent.infusion.controller.payment;
 import com.stripe.model.checkout.Session;
 import com.talent.infusion.dto.CreateCheckoutSessionDto;
 import com.talent.infusion.dto.CreatePaymentDto;
+import com.talent.infusion.dto.CreatePortalSessionDto;
 import com.talent.infusion.entiry.payment.Payment;
 import com.talent.infusion.entiry.user.User;
 import com.talent.infusion.service.payment.PaymentService;
@@ -90,6 +91,37 @@ public class PaymentController {
                 resultMap.put("message", "webhook failed");
                 ctx.status(HttpStatus.SERVICE_UNAVAILABLE).json(resultMap);
             }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            resultMap.put("success", false);
+            resultMap.put("message", e.getMessage());
+            ctx.status(HttpStatus.SERVICE_UNAVAILABLE).json(resultMap);
+        }
+    };
+
+    public Handler createPortalSession = ctx -> {
+        JavalinJackson jackson = new JavalinJackson();
+        HashMap<String, Object> resultMap = new HashMap<>();
+        CreatePortalSessionDto createPortalSessionDto;
+
+        try {
+            createPortalSessionDto = jackson.fromJsonString(ctx.body(), CreatePortalSessionDto.class);
+            int userId = createPortalSessionDto.getUserId();
+
+            Optional<User> user = userService.getUserById(userId);
+
+            if (user.isEmpty()) {
+                resultMap.put("success", false);
+                resultMap.put("message", "User not found or userId is not correct");
+                ctx.status(HttpStatus.BAD_REQUEST).json(resultMap);
+                return;
+            }
+
+            Session portalSession = paymentService.createPortalSession(user.get());
+
+            resultMap.put("success", true);
+            resultMap.put("portalSessionId", portalSession.getId());
+            ctx.status(HttpStatus.OK).json(resultMap);
         } catch (Exception e) {
             log.error(e.getMessage());
             resultMap.put("success", false);

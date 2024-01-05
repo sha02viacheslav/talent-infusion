@@ -115,6 +115,9 @@ public class Main {
                 path("webhook", () -> {
                     post(paymentController().verifyPayments);
                 });
+                path("create-portal-session", () -> {
+                    post(paymentController().createPortalSession);
+                });
             });
         });
     }
