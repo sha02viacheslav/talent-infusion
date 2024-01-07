@@ -3,6 +3,7 @@ package com.talent.infusion;
 import com.talent.infusion.controller.auth.AuthController;
 import com.talent.infusion.controller.invitation.InvitationController;
 import com.talent.infusion.controller.payment.PaymentController;
+import com.talent.infusion.controller.subsctiption.SubscriptionController;
 import com.talent.infusion.controller.talent.TalentController;
 import com.talent.infusion.controller.user.UserController;
 import com.talent.infusion.repository.invitation.InvitationRepository;
@@ -39,6 +40,7 @@ public class Configuration {
     private static final InvitationController invitationController = new InvitationController(invitationService, userService);
     private static final TalentController talentController = new TalentController(talentService);
     private static final PaymentController paymentController = new PaymentController(paymentService, userService);
+    private static final SubscriptionController subscriptionController = new SubscriptionController(subscriptionService, userService);
 
     public static UserService userService() {
         return userService;
@@ -66,6 +68,10 @@ public class Configuration {
 
     public static PaymentController paymentController() {
         return paymentController;
+    }
+
+    public static SubscriptionController subscriptionController() {
+        return subscriptionController;
     }
 
     public static DB db() {

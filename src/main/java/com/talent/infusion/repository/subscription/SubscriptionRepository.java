@@ -18,6 +18,10 @@ public class SubscriptionRepository {
         return db.withDb(() -> Optional.ofNullable(TiSubscription.findById(id)));
     }
 
+    public Optional<TiSubscription> getSubscriptionUserId(int userId) {
+        return db.withDb(() -> Optional.ofNullable(TiSubscription.findFirst("user_id = ?", userId)));
+    }
+
     public void createSubscription(HashMap<String, Object> data) {
         db.withDb(() -> {
             TiSubscription subscription = new TiSubscription();

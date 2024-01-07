@@ -12,6 +12,10 @@ public class TiSubscription extends Model {
         return getInteger("id");
     }
 
+    public String getStripeSubscriptionId() {
+        return getString("stripe_subscription_id");
+    }
+
     public Date getCurrentPeriodEnd() {
         return getDate("current_period_end");
     }

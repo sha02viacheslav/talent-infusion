@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS ti_payments (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS subscription (
+CREATE TABLE IF NOT EXISTS ti_subscriptions (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES ti_users(id) ON DELETE SET NULL,
     stripe_subscription_id VARCHAR(255) NOT NULL,

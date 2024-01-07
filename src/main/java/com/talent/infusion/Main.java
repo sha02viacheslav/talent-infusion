@@ -3,12 +3,12 @@ package com.talent.infusion;
 
 import com.talent.infusion.controller.invitation.InvitationController;
 import com.talent.infusion.controller.main.MainController;
+import com.talent.infusion.controller.subsctiption.SubscriptionController;
 import com.talent.infusion.controller.user.UserController;
 import com.talent.infusion.guard.AuthGuard;
 import com.talent.infusion.guard.AuthRole;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.javalin.Javalin;
-import io.javalin.json.JavalinJackson;
 import lombok.extern.slf4j.Slf4j;
 import org.javalite.activejdbc.Base;
 
@@ -117,6 +117,12 @@ public class Main {
                 });
                 path("create-portal-session", () -> {
                     post(paymentController().createPortalSession);
+                });
+            });
+
+            path("/subscription", () -> {
+                path(String.format("userId/{%s}", SubscriptionController.SUBSCRIPTION_USERID_PATH_PARAM), () -> {
+                    delete(subscriptionController().cancelSubscription, AuthRole.LOGGED_IN_USER);
                 });
             });
         });
